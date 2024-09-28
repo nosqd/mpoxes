@@ -1,7 +1,6 @@
 #include <raylib.h>
 #include <imgui.h>
 #include <rlImGui.h>
-#include <vector>
 #include <chrono>
 #include <unordered_map>
 #include <cstring>
@@ -46,9 +45,9 @@ public:
 
     void RenderImGui();
 
-    void Shutdown();
+    void Shutdown() const;
 
-    void ClientConnect(std::string host, int port);
+    void ClientConnect(const std::string& host, int port);
 
     void ClientDisconnect();
 };
@@ -93,12 +92,12 @@ void Game::Update(float dt) {
         float scale = fmin(static_cast<float>(GetScreenWidth()) / DESIGN_WIDTH,
                            static_cast<float>(GetScreenHeight()) / DESIGN_HEIGHT);
 
-        camera.offset.x = GetScreenWidth() / 2.0f;
-        camera.offset.y = GetScreenHeight() / 2.0f;
+        camera.offset.x = static_cast<float>(GetScreenWidth()) / 2.0f;
+        camera.offset.y = static_cast<float>(GetScreenHeight()) / 2.0f;
         camera.zoom = scale;
     }
 
-    for (auto p: players) {
+    for (const auto& p: players) {
         p.second->Update(dt, players_wish_dirs[p.first]);
     }
 
@@ -114,7 +113,7 @@ void Game::Update(float dt) {
                     players_wish_dirs[p->id] = Vector2(0, 0);
                     event.peer->data = reinterpret_cast<void *>(p->id);
 
-                    for (auto &players_pair: players) {
+                    for (const auto &players_pair: players) {
                         auto join_packet = server_join_packet(players_pair.second->id, players_pair.second->position, players_pair.second->color);
                         enet_host_broadcast(server, 0, join_packet);
                     }
@@ -196,7 +195,6 @@ void Game::Update(float dt) {
                     case ENET_EVENT_TYPE_DISCONNECT: {
                         TraceLog(LOG_FATAL, "Client disconnected");
                         exit(EXIT_FAILURE);
-                        return;
                     }
                     case ENET_EVENT_TYPE_NONE:
                     case ENET_EVENT_TYPE_CONNECT:
@@ -212,7 +210,7 @@ void Game::Render() {
     ClearBackground(BLACK);
 
     BeginMode2D(camera);
-    for (auto p: players) {
+    for (const auto& p: players) {
         p.second->Render();
     }
 
@@ -235,7 +233,7 @@ void Game::RenderImGui() {
         }
     }
     ImGui::Separator();
-    for (auto p: players) {
+    for (const auto& p: players) {
         ImGui::Text(TextFormat("Player %d", p.first));
         ImGui::Text(TextFormat("Position: %f %f", p.second->position.x, p.second->position.y));
         ImGui::Text(TextFormat("Wish direction: %f %f", players_wish_dirs[p.first].x, players_wish_dirs[p.first].y));
@@ -255,7 +253,7 @@ void Game::RenderImGui() {
             ImGui::InputText("Port", connect_modal_port, IM_ARRAYSIZE(connect_modal_port));
 
             if (ImGui::Button("Connect")) {
-                ClientConnect(connect_modal_host, std::atoi(connect_modal_port));
+                ClientConnect(connect_modal_host, std::strtol(connect_modal_port, nullptr, 10));
             }
 
             if (!connect_modal_error_message.empty()) {
@@ -270,7 +268,7 @@ void Game::RenderImGui() {
     rlImGuiEnd();
 }
 
-void Game::Shutdown() {
+void Game::Shutdown() const {
     if (!is_server) {
         rlImGuiShutdown();
         CloseWindow();
@@ -301,7 +299,7 @@ void Game::Shutdown() {
     }
 }
 
-void Game::ClientConnect(std::string host, int port) {
+void Game::ClientConnect(const std::string& host, int port) {
     ENetEvent event;
     ENetAddress address;
 

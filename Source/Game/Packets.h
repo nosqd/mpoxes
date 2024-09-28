@@ -58,7 +58,7 @@ inline ENetPacket *client_move_packet(uint8_t direction) {
     return packet;
 }
 
-inline uint8_t client_move_packet_get_input(char *data) {
+inline uint8_t client_move_packet_get_input(const char *data) {
     uint8_t moveDir;
     std::memcpy(&moveDir, data + 1, sizeof(moveDir));
     return moveDir;
@@ -76,19 +76,19 @@ inline ENetPacket *server_move_packet(int id, uint8_t moveDir, Vector2 position)
     return packet;
 }
 
-inline int server_move_packet_get_id(char *data) {
+inline int server_move_packet_get_id(const char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
 }
 
-inline uint8_t server_move_packet_get_input(char *data) {
+inline uint8_t server_move_packet_get_input(const char *data) {
     uint8_t moveDir;
     std::memcpy(&moveDir, data + 1 + sizeof(int), sizeof(moveDir));
     return moveDir;
 }
 
-inline Vector2 server_move_packet_get_position(char *data) {
+inline Vector2 server_move_packet_get_position(const char *data) {
     Vector2 position;
     std::memcpy(&position, data + 1 + sizeof(int) + sizeof(uint8_t), sizeof(position));
     return position;
@@ -106,19 +106,19 @@ inline ENetPacket *server_join_packet(int id, Vector2 position, Color color) {
     return packet;
 }
 
-inline int server_join_packet_get_id(char *data) {
+inline int server_join_packet_get_id(const char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
 }
 
-inline Vector2 server_join_packet_get_position(char *data) {
+inline Vector2 server_join_packet_get_position(const char *data) {
     Vector2 position;
     std::memcpy(&position, data + 1 + sizeof(int), sizeof(position));
     return position;
 }
 
-inline Color server_join_packet_get_color(char* data) {
+inline Color server_join_packet_get_color(const char* data) {
     Color color;
     std::memcpy(&color, data + 1 + sizeof(int) + sizeof(Vector2), sizeof(color));
     return color;
@@ -134,7 +134,7 @@ inline ENetPacket *server_hello_packet(int id) {
     return packet;
 }
 
-inline int server_hello_packet_get_id(char *data) {
+inline int server_hello_packet_get_id(const char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
@@ -150,7 +150,7 @@ inline ENetPacket *server_bye_packet(int id) {
     return packet;
 }
 
-inline int server_bye_packet_get_id(char *data) {
+inline int server_bye_packet_get_id(const char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;

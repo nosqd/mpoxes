@@ -8,20 +8,15 @@
 #include <raymath.h>
 
 constexpr int PLAYER_SPEED = 120;
-//constexpr Vector2 PLAYER_SIZE = Vector2{32.0f, 32.0f};
 constexpr int PLAYER_SIZE = 8.f;
 
 class Player {
-private:
-
-    Vector2 last_drawn_position{};
-
 public:
     int id;
     Vector2 position{};
     Color color{};
 
-    Player(const int id, Vector2 position, Color color);
+    Player(int id, Vector2 position, Color color);
 
     void Update(float dt, Vector2 move_dir);
     void Render() const;

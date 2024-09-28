@@ -1,8 +1,5 @@
-//
-// Created by null on 9/28/2024.
-//
-
 #include "Input.h"
+#include <cmath>
 
 Vector2 Input::GetMoveDir() {
     Vector2 wish_dir = { 0.0f, 0.0f };
