@@ -8,6 +8,7 @@
       "features": ["glfw-binding", "win32-binding", "opengl3-binding"]
     },
     "enet",
-    "physac"
+    "physac",
+    "catch2"
   ]
 }
