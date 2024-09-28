@@ -1,0 +1,13 @@
+{
+  "name": "mpoxes",
+  "version": "0.1.0",
+  "dependencies" : [
+    "raylib",
+    {
+      "name": "imgui",
+      "features": ["glfw-binding", "win32-binding", "opengl3-binding"]
+    },
+    "enet",
+    "physac"
+  ]
+}
