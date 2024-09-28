@@ -25,10 +25,10 @@ class Game {
 public:
     bool is_server = false;
     Camera2D camera{};
-    Player *local_player = nullptr;
+    std::shared_ptr<Player> local_player;
     bool running = false;
     int id_counter = 0;
-    std::unordered_map<int, Player *> players;
+    std::unordered_map<int, std::shared_ptr<Player> > players;
     std::unordered_map<int, Vector2> players_wish_dirs;
 
     ENetHost *server{};
@@ -49,6 +49,8 @@ public:
     void Shutdown();
 
     void ClientConnect(std::string host, int port);
+
+    void ClientDisconnect();
 };
 
 void Game::Setup() {
@@ -105,7 +107,7 @@ void Game::Update(float dt) {
             switch (event.type) {
                 case ENET_EVENT_TYPE_CONNECT: {
                     TraceLog(LOG_INFO, "New client connected");
-                    auto *p = new Player(++id_counter, Vector2(0, 0));
+                    auto p = std::make_shared<Player>(++id_counter, Vector2(0, 0));
                     players[p->id] = p;
                     players_wish_dirs[p->id] = Vector2(0, 0);
                     event.peer->data = reinterpret_cast<void *>(p->id);
@@ -127,14 +129,17 @@ void Game::Update(float dt) {
                         auto wishDir = client_move_packet_get_input(data);
                         players_wish_dirs[pid] = moveDirectionFrom(wishDir);
 
-                        auto bc_packet2 = server_move_packet(pid, wishDir);
+                        auto bc_packet2 = server_move_packet(pid, wishDir, player->position);
                         enet_host_broadcast(server, 0, bc_packet2);
                     }
 
                     break;
                 }
                 case ENET_EVENT_TYPE_DISCONNECT: {
+                    auto pid = reinterpret_cast<int>(event.peer->data);
                     TraceLog(LOG_INFO, "Client disconnected");
+                    auto bc_packet = server_bye_packet(pid);
+                    enet_host_broadcast(server, 0, bc_packet);
                     event.peer->data = nullptr;
                     break;
                 }
@@ -155,7 +160,7 @@ void Game::Update(float dt) {
                         if (data[0] == 'j') {
                             int id = server_join_packet_get_id(data);
                             Vector2 pos = server_join_packet_get_position(data);
-                            Player *p = new Player(id, pos);
+                            auto p = std::make_shared<Player>(id, pos);
                             players[id] = p;
                             players_wish_dirs[id] = Vector2(0, 0);
 
@@ -163,12 +168,24 @@ void Game::Update(float dt) {
                         } else if (data[0] == 'm') {
                             int id = server_move_packet_get_id(data);
                             Vector2 wishDir = moveDirectionFrom(server_move_packet_get_input(data));
+                            Vector2 newPosition = server_move_packet_get_position(data);
 
                             players_wish_dirs[id] = wishDir;
+                            players[id]->position = newPosition;
                         } else if (data[0] == 'h') {
                             auto pid = server_hello_packet_get_id(data);
                             local_player = players[pid];
+                        } else if (data[0] == 'b') {
+                            auto pid = server_bye_packet_get_id(data);
+                            auto player = players[pid];
+
+                            if (player->id == local_player->id) {
+                                ClientDisconnect();
+                            } else {
+                                players.erase(pid);
+                            }
                         }
+
 
                         enet_packet_destroy(event.packet);
                         break;
@@ -209,6 +226,11 @@ void Game::RenderImGui() {
 
     ImGui::Text("mpoxes");
     ImGui::Text(TextFormat("FPS: %d", GetFPS()));
+    if (client_peer != nullptr) {
+        if (ImGui::Button("Disconnect")) {
+            ClientDisconnect();
+        }
+    }
     ImGui::Separator();
     for (auto p: players) {
         ImGui::Text(TextFormat("Player %d", p.first));
@@ -292,6 +314,19 @@ void Game::ClientConnect(std::string host, int port) {
         connect_modal_error_message = "Could not connect to server.";
         TraceLog(LOG_ERROR, "Connection to server failed.");
     }
+}
+
+void Game::ClientDisconnect() {
+    TraceLog(LOG_INFO, "dISCONNECTING");
+    local_player = nullptr;
+    id_counter = 0;
+    players.clear();
+    players_wish_dirs.clear();
+    enet_peer_disconnect(client_peer, 0);
+    enet_host_destroy(client);
+    client_peer = nulwlptr;
+    client = nullptr;
+    connect_modal_error_message = "";
 }
 
 int main(int argc, char *argv[]) {

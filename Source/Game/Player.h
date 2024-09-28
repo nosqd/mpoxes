@@ -8,7 +8,8 @@
 #include <raymath.h>
 
 constexpr int PLAYER_SPEED = 120;
-constexpr Vector2 PLAYER_SIZE = Vector2{32.0f, 32.0f};
+//constexpr Vector2 PLAYER_SIZE = Vector2{32.0f, 32.0f};
+constexpr int PLAYER_SIZE = 8.f;
 
 class Player {
 private:
