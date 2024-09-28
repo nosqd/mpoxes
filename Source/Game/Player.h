@@ -19,8 +19,9 @@ private:
 public:
     int id;
     Vector2 position{};
+    Color color{};
 
-    Player(const int id, Vector2 position);
+    Player(const int id, Vector2 position, Color color);
 
     void Update(float dt, Vector2 move_dir);
     void Render() const;

@@ -2,6 +2,7 @@
 #include "catch2/catch_all.hpp"
 #include "../Game/Packets.h"
 #include <random>
+#include <raylib.h>
 
 std::random_device rd;
 std::mt19937 gen(rd());
@@ -57,15 +58,19 @@ TEST_CASE("Server Move Packet", "[server][move]") {
 TEST_CASE("Server Join Packet", "[server][join]") {
     int idExpected = randomInt(1, 1000000);
     Vector2 positionExpected = randomVector2(-10000.0f, 10000.0f);
+    Color colorExpected = Color(69, 420, 52, 255);
 
     SECTION("ID and Position are correctly set and retrieved") {
-        auto packet = server_join_packet(idExpected, positionExpected);
+        auto packet = server_join_packet(idExpected, positionExpected, colorExpected);
 
         auto id = server_join_packet_get_id(reinterpret_cast<char *>(packet->data));
         REQUIRE(id == idExpected);
 
         auto position = server_join_packet_get_position(reinterpret_cast<char *>(packet->data));
         REQUIRE(vector2Equal(position, positionExpected));
+
+        auto color = server_join_packet_get_color(reinterpret_cast<char *>(packet->data));
+        REQUIRE((color.r == colorExpected.r && color.g == colorExpected.g && color.b == colorExpected.b && color.a == colorExpected.a));
     }
 }
 

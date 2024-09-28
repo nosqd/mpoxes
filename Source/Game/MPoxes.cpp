@@ -56,6 +56,7 @@ public:
 void Game::Setup() {
     running = true;
     TraceLog(LOG_INFO, "starting mpoxes.");
+    SetRandomSeed(52);
     if (!is_server) {
         InitWindow(DESIGN_WIDTH, DESIGN_HEIGHT, "mpoxes");
 
@@ -107,13 +108,14 @@ void Game::Update(float dt) {
             switch (event.type) {
                 case ENET_EVENT_TYPE_CONNECT: {
                     TraceLog(LOG_INFO, "New client connected");
-                    auto p = std::make_shared<Player>(++id_counter, Vector2(0, 0));
+                    auto c = Color(GetRandomValue(127, 255), GetRandomValue(127, 255), GetRandomValue(127, 255), 255);
+                    auto p = std::make_shared<Player>(++id_counter, Vector2(0, 0), c);
                     players[p->id] = p;
                     players_wish_dirs[p->id] = Vector2(0, 0);
                     event.peer->data = reinterpret_cast<void *>(p->id);
 
                     for (auto &players_pair: players) {
-                        auto join_packet = server_join_packet(players_pair.second->id, players_pair.second->position);
+                        auto join_packet = server_join_packet(players_pair.second->id, players_pair.second->position, players_pair.second->color);
                         enet_host_broadcast(server, 0, join_packet);
                     }
 
@@ -160,7 +162,8 @@ void Game::Update(float dt) {
                         if (data[0] == 'j') {
                             int id = server_join_packet_get_id(data);
                             Vector2 pos = server_join_packet_get_position(data);
-                            auto p = std::make_shared<Player>(id, pos);
+                            Color color = server_join_packet_get_color(data);
+                            auto p = std::make_shared<Player>(id, pos, color);
                             players[id] = p;
                             players_wish_dirs[id] = Vector2(0, 0);
 
@@ -235,7 +238,8 @@ void Game::RenderImGui() {
     for (auto p: players) {
         ImGui::Text(TextFormat("Player %d", p.first));
         ImGui::Text(TextFormat("Position: %f %f", p.second->position.x, p.second->position.y));
-        ImGui::Text(TextFormat("Wishdir: %f %f", players_wish_dirs[p.first].x, players_wish_dirs[p.first].y));
+        ImGui::Text(TextFormat("Wish direction: %f %f", players_wish_dirs[p.first].x, players_wish_dirs[p.first].y));
+        ImGui::Text(TextFormat("Color: %d %d %d", p.second->color.r, p.second->color.g, p.second->color.b));
         ImGui::Separator();
     }
 
@@ -324,7 +328,7 @@ void Game::ClientDisconnect() {
     players_wish_dirs.clear();
     enet_peer_disconnect(client_peer, 0);
     enet_host_destroy(client);
-    client_peer = nulwlptr;
+    client_peer = nullptr;
     client = nullptr;
     connect_modal_error_message = "";
 }

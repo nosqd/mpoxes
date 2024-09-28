@@ -4,16 +4,20 @@
 
 #ifndef PACKETS_H
 #define PACKETS_H
+#ifdef WIN32
+#define NOGDI
+#define NOUSER
+#endif
 #include <cstdint>
 #include <enet/enet.h>
 #if defined(_WIN32)           // raylib uses these names as function parameters
 #undef near
 #undef far
+#undef PlaySound
 #endif
+#include <raylib.h>
 #include <raymath.h>
-#include <cstdint>
 #include <cstring>
-#include <iostream>
 
 enum MoveDirection : uint8_t {
     UP = 0b0001,
@@ -91,12 +95,13 @@ inline Vector2 server_move_packet_get_position(char *data) {
 }
 #pragma endregion
 #pragma region server_join
-inline ENetPacket *server_join_packet(int id, Vector2 position) {
-    constexpr int packet_size = 1 + sizeof(int) + sizeof(Vector2);
+inline ENetPacket *server_join_packet(int id, Vector2 position, Color color) {
+    constexpr int packet_size = 1 + sizeof(int) + sizeof(Vector2) + sizeof(Color);
     uint8_t data[packet_size] = {};
     data[0] = 'j';
     std::memcpy(data + 1, &id, sizeof(id));
     std::memcpy(data + 1 + sizeof(int), &position, sizeof(Vector2));
+    std::memcpy(data + 1 + sizeof(int) + sizeof(Vector2), &color, sizeof(Color));
     auto packet = enet_packet_create(data, packet_size, 0);
     return packet;
 }
@@ -111,6 +116,12 @@ inline Vector2 server_join_packet_get_position(char *data) {
     Vector2 position;
     std::memcpy(&position, data + 1 + sizeof(int), sizeof(position));
     return position;
+}
+
+inline Color server_join_packet_get_color(char* data) {
+    Color color;
+    std::memcpy(&color, data + 1 + sizeof(int) + sizeof(Vector2), sizeof(color));
+    return color;
 }
 #pragma endregion
 #pragma region server_hello
