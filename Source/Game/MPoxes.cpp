@@ -1,10 +1,10 @@
 #include <raylib.h>
 #include <imgui.h>
 #include <rlImGui.h>
-#include <raymath.h>
 #include <vector>
 #include <chrono>
-#include <string>
+#include <unordered_map>
+#include <cstring>
 #if defined(_WIN32)
 #define NOGDI             // All GDI defines and routines
 #define NOUSER            // All USER defines and routines
@@ -14,15 +14,12 @@
 #undef near
 #undef far
 #endif
-#include <cstring>
 #include "Input.h"
 #include "Player.h"
-#include <unordered_map>
-
 #include "Packets.h"
 
-const int DESIGN_WIDTH = 1000;
-const int DESIGN_HEIGHT = 562;
+constexpr int DESIGN_WIDTH = 1000;
+constexpr int DESIGN_HEIGHT = 562;
 
 class Game {
 public:
@@ -34,9 +31,9 @@ public:
     std::unordered_map<int, Player *> playersMap;
     std::unordered_map<int, Vector2> playersWishDirMap;
 
-    ENetHost *server;
-    ENetHost *client;
-    ENetPeer *client_peer;
+    ENetHost *server{};
+    ENetHost *client{};
+    ENetPeer *client_peer{};
 
     void Setup();
 
@@ -101,8 +98,8 @@ void Game::Setup() {
 
 void Game::Update(float dt) {
     if (!isServer) {
-        float scale = fmin((float) GetScreenWidth() / DESIGN_WIDTH,
-                           (float) GetScreenHeight() / DESIGN_HEIGHT);
+        float scale = fmin(static_cast<float>(GetScreenWidth()) / DESIGN_WIDTH,
+                           static_cast<float>(GetScreenHeight()) / DESIGN_HEIGHT);
 
         camera.offset.x = GetScreenWidth() / 2.0f;
         camera.offset.y = GetScreenHeight() / 2.0f;
@@ -139,7 +136,7 @@ void Game::Update(float dt) {
                     auto data = reinterpret_cast<char*>(event.packet->data);
                     if (data[0] == 'm') {
                         auto wishDir = client_move_packet_get_input(data);
-                        playersWishDirMap[pid] = wishDir;
+                        playersWishDirMap[pid] = moveDirectionFrom(wishDir);
 
                         auto bc_packet2 = server_move_packet(pid, wishDir);
                         enet_host_broadcast(server, 0, bc_packet2);
@@ -157,7 +154,7 @@ void Game::Update(float dt) {
             }
         }
     } else {
-        auto packet = client_move_packet(Input::GetMoveDir());
+        auto packet = client_move_packet(moveDirectionTo(Input::GetMoveDir()));
         enet_peer_send(client_peer, 0, packet);
 
         ENetEvent event;
@@ -175,7 +172,7 @@ void Game::Update(float dt) {
                         TraceLog(LOG_INFO, TextFormat("New player joined: %d", id));
                     } else if (data[0] == 'm') {
                         int id = server_move_packet_get_id(data);
-                        Vector2 wishDir = server_move_packet_get_input(data);
+                        Vector2 wishDir = moveDirectionFrom(server_move_packet_get_input(data));
 
                         playersWishDirMap[id] = wishDir;
                     } else if (data[0] == 'h') {
@@ -223,7 +220,6 @@ void Game::RenderImGui() {
         drawList->AddText(ImVec2(16.f, ++line * 14.f), 0xFFFFFFFF, TextFormat("Player %d", p.first));
         drawList->AddText(ImVec2(16.f, ++line * 14.f), 0xFFFFFFFF,
                           TextFormat("Position: %f %f", p.second->position.x, p.second->position.y));
-        // p.second->position.x, p.second->position.y
         drawList->AddText(ImVec2(16.f, ++line * 14.f), 0xFFFFFFFF,
                           TextFormat("Wishdir: %f %f", playersWishDirMap[p.first].x, playersWishDirMap[p.first].y));
         drawList->AddText(ImVec2(16.f, ++line * 14.f), 0xFFFFFFFF, TextFormat("----------"));

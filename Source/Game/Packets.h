@@ -15,45 +15,75 @@
 #include <cstring>
 #include <iostream>
 
-inline ENetPacket *client_move_packet(Vector2 moveDir) {
+enum MoveDirection : uint8_t {
+    UP = 0b0001,
+    DOWN = 0b0010,
+    LEFT = 0b0100,
+    RIGHT = 0b1000
+};
+
+inline Vector2 moveDirectionFrom(uint8_t direction) {
+    auto wishDir = Vector2(0, 0);
+
+    if (direction & MoveDirection::UP) wishDir.y = 1.f;
+    if (direction & MoveDirection::DOWN) wishDir.y = -1.f;
+    if (direction & MoveDirection::RIGHT) wishDir.x = 1.f;
+    if (direction & MoveDirection::LEFT) wishDir.x = -1.f;
+
+    return Vector2Normalize(wishDir);
+}
+
+inline uint8_t moveDirectionTo(Vector2 direction) {
+    uint8_t wishDir = 0;
+
+    if (direction.y > 0.5f) wishDir |= MoveDirection::UP;
+    if (direction.y < -0.5f) wishDir |= MoveDirection::DOWN;
+    if (direction.x < -0.5f) wishDir |= MoveDirection::LEFT;
+    if (direction.x > 0.5f) wishDir |= MoveDirection::RIGHT;
+
+    return wishDir;
+}
+
+#pragma region client_move
+inline ENetPacket *client_move_packet(uint8_t direction) {
     constexpr int packet_size = 1 + sizeof(Vector2);
     uint8_t data[packet_size] = {};
     data[0] = 'm';
-    Vector2 input = moveDir;
-    std::memcpy(data + 1, &input, sizeof(Vector2));
+    std::memcpy(data + 1, &direction, sizeof(direction));
     auto packet = enet_packet_create(data, packet_size, ENET_PACKET_FLAG_RELIABLE);
     return packet;
 }
 
-inline Vector2 client_move_packet_get_input(char* data) {
-    Vector2 moveDir;
+inline uint8_t client_move_packet_get_input(char *data) {
+    uint8_t moveDir;
     std::memcpy(&moveDir, data + 1, sizeof(moveDir));
     return moveDir;
 }
-
-inline ENetPacket *server_move_packet(int id, Vector2 moveDir) {
+#pragma endregion
+#pragma region server_move
+inline ENetPacket *server_move_packet(int id, uint8_t moveDir) {
     constexpr int packet_size = 1 + sizeof(int) + sizeof(Vector2);
     uint8_t data[packet_size] = {};
     data[0] = 'm';
     std::memcpy(data + 1, &id, sizeof(id));
-    Vector2 input = moveDir;
-    std::memcpy(data + 1 + sizeof(int), &input, sizeof(Vector2));
+    std::memcpy(data + 1 + sizeof(int), &moveDir, sizeof(uint8_t));
     auto packet = enet_packet_create(data, packet_size, 0);
     return packet;
 }
 
-inline int server_move_packet_get_id(char* data) {
+inline int server_move_packet_get_id(char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
 }
 
-inline Vector2 server_move_packet_get_input(char* data) {
-    Vector2 moveDir;
+inline uint8_t server_move_packet_get_input(char *data) {
+    uint8_t moveDir;
     std::memcpy(&moveDir, data + 1 + sizeof(int), sizeof(moveDir));
     return moveDir;
 }
-
+#pragma endregion
+#pragma region server_join
 inline ENetPacket *server_join_packet(int id, Vector2 position) {
     constexpr int packet_size = 1 + sizeof(int) + sizeof(Vector2);
     uint8_t data[packet_size] = {};
@@ -64,18 +94,19 @@ inline ENetPacket *server_join_packet(int id, Vector2 position) {
     return packet;
 }
 
-inline int server_join_packet_get_id(char* data) {
+inline int server_join_packet_get_id(char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
 }
 
-inline Vector2 server_join_packet_get_position(char* data) {
+inline Vector2 server_join_packet_get_position(char *data) {
     Vector2 position;
     std::memcpy(&position, data + 1 + sizeof(int), sizeof(position));
     return position;
 }
-
+#pragma endregion
+#pragma region server_hello
 inline ENetPacket *server_hello_packet(int id) {
     constexpr int packet_size = 1 + sizeof(int) + sizeof(Vector2);
     uint8_t data[packet_size] = {};
@@ -85,10 +116,11 @@ inline ENetPacket *server_hello_packet(int id) {
     return packet;
 }
 
-inline int server_hello_packet_get_id(char* data) {
+inline int server_hello_packet_get_id(char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
 }
+#pragma endregion
 
 #endif //PACKETS_H
