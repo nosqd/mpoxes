@@ -17,11 +17,9 @@ add_executable(mpoxes Source/MPoxes.cpp
         Source/Packets.h
 )
 
-add_executable(enet-test Source/EnetTest.cpp)
 add_executable(network-test Source/NetworkTest.cpp
         Source/Packets.h)
 
-target_link_libraries(enet-test PRIVATE unofficial::enet::enet)
 target_link_libraries(network-test PRIVATE unofficial::enet::enet)
 target_link_libraries(mpoxes PRIVATE raylib)
 target_link_libraries(mpoxes PRIVATE imgui::imgui)
