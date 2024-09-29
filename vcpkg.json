@@ -12,6 +12,7 @@
     "spdlog",
     "glad",
     "stb",
-    "glm"
+    "glm",
+    "nlohmann-json"
   ]
 }

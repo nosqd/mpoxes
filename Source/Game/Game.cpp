@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "GameData.h"
 #include "Mesh.h"
 
 static void glfw_error_callback(int error, const char* description)
@@ -18,6 +19,8 @@ void Game::Setup() {
     }
 
     if (!is_server) {
+        GameData::Load();
+
         window = glfwCreateWindow(DESIGN_WIDTH, DESIGN_HEIGHT, "mpoxes", nullptr, nullptr);
 
         glfwSetErrorCallback(glfw_error_callback);
@@ -109,6 +112,7 @@ void Game::Shutdown() {
         glfwTerminate();
 
         ClientDisconnect();
+        GameData::Save();
     }
 
     if (is_server) {

@@ -14,11 +14,15 @@ I'm builtin CLion vcpkg support, but you can just integrate vcpkg in your cmake 
 
 ## Dependencies
 
-- raylib (vcpkg) - Simple and easy-to-use library to enjoy videogames programming
 - imgui (vcpkg) - Bloat-free Graphical User interface for C++ with minimal dependencies
 - enet (vcpkg) - Reliable UDP networking library
-- physac (vcpkg) - (unused now)  2D physics header-only library for videogames developed in C using raylib library.
-- rlImgui ([ThirdParty/rlImgui/](ThirdParty/rlImgui/)) - Raylib integration with DearImGui. (backported to imgui v1.91.0 by me)
+- catch2 (vcpkg) - A modern, C++-native, test framework for unit-tests, TDD and BDD
+- glfw3 (vcpkg) - Open Source, multi-platform library for OpenGL, OpenGL ES and Vulkan development on the desktop
+- spdlog (vcpkg) - Fast C++ logging library
+- glad (vcpkg) - Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
+- stb (vcpkg) - stb single-file public domain libraries for C/C++
+- glm (vcpkg) - OpenGL Mathematics (GLM)
+- nlohmann-json (vcpkg) - JSON for Modern C++
 
 ## How to use.
 

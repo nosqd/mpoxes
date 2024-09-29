@@ -1,17 +1,19 @@
 #include "Game.h"
 #include <imgui.h>
 
+#include "GameData.h"
+
 void Game::DrawConnectModal() {
     ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                             ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
 
     if (ImGui::Begin("Connect to Server", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::InputText("Host", connect_modal_host, IM_ARRAYSIZE(connect_modal_host));
-        ImGui::InputText("Port", connect_modal_port, IM_ARRAYSIZE(connect_modal_port));
+        ImGui::InputText("Host", &GameData::connect_modal_host);
+        ImGui::InputText("Port", &GameData::connect_modal_port);
 
         if (ImGui::Button("Connect")) {
-            ClientConnect(connect_modal_host, std::strtol(connect_modal_port, nullptr, 10));
+            ClientConnect(GameData::connect_modal_host, std::strtol(GameData::connect_modal_port.c_str(), nullptr, 10));
         }
 
         if (!connect_modal_error_message.empty()) {

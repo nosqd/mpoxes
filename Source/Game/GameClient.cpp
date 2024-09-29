@@ -98,23 +98,26 @@ void Game::ClientDisconnect() {
     players.clear();
     players_wish_dirs.clear();
     ENetEvent event;
-    enet_peer_disconnect(client_peer, 0);
+    if (client_peer != nullptr) {
+        enet_peer_disconnect(client_peer, 0);
 
-    while (enet_host_service(client, &event, 3000) > 0) {
-        switch (event.type) {
-            case ENET_EVENT_TYPE_RECEIVE:
-                enet_packet_destroy(event.packet);
+        while (enet_host_service(client, &event, 3000) > 0) {
+            switch (event.type) {
+                case ENET_EVENT_TYPE_RECEIVE:
+                    enet_packet_destroy(event.packet);
                 break;
-            case ENET_EVENT_TYPE_DISCONNECT:
-                spdlog::info("Disconnection succeeded.");
+                case ENET_EVENT_TYPE_DISCONNECT:
+                    spdlog::info("Disconnection succeeded.");
                 return;
-            case ENET_EVENT_TYPE_NONE:
-            case ENET_EVENT_TYPE_CONNECT:
-                break;
+                case ENET_EVENT_TYPE_NONE:
+                case ENET_EVENT_TYPE_CONNECT:
+                    break;
+            }
         }
-    }
 
-    enet_host_destroy(client);
+        enet_host_destroy(client);
+        SetupClientNetwork();
+    }
     client_peer = nullptr;
     client = nullptr;
     local_player = nullptr;

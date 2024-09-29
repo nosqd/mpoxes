@@ -14,6 +14,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <imgui_stdlib.h>
 
 #include "Camera2D.h"
 
@@ -40,8 +41,6 @@ public:
     Shader shader{};
 
     std::string connect_modal_error_message;
-    char connect_modal_host[256] = "localhost";
-    char connect_modal_port[6] = "7777";
 
     void StartServer();
 
