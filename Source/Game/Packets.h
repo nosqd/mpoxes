@@ -8,6 +8,7 @@
 #include <enet/enet.h>
 #include "../Math/Vector.h"
 #include "../Math/Color.h"
+#include "../Level/Level.h"
 #include <cstring>
 
 enum MoveDirection : uint8_t {
@@ -116,12 +117,25 @@ inline Color server_join_packet_get_color(const char *data) {
 }
 #pragma endregion
 #pragma region server_hello
-inline ENetPacket *server_hello_packet(int id) {
-    constexpr int packet_size = 1 + sizeof(int);
-    uint8_t data[packet_size] = {};
+inline ENetPacket *server_hello_packet(int id, Level& level) {
+    size_t level_size;
+    char* level_data = level.Serialize(&level_size);
+
+    size_t packet_size = 1 + sizeof(int) + sizeof(size_t) + level_size;
+
+    auto *data = new uint8_t[packet_size];
+
     data[0] = 'h';
+
     std::memcpy(data + 1, &id, sizeof(id));
-    auto packet = enet_packet_create(data, packet_size, 0);
+    std::memcpy(data + 1 + sizeof(id), &level_size, sizeof(size_t));
+    std::memcpy(data + 1 + sizeof(id) + sizeof(size_t), level_data, level_size);
+
+    auto packet = enet_packet_create(data, packet_size, ENET_PACKET_FLAG_RELIABLE);
+
+    delete[] data;
+    delete[] level_data;  // Free the serialized level data
+
     return packet;
 }
 
@@ -129,6 +143,19 @@ inline int server_hello_packet_get_id(const char *data) {
     int id;
     std::memcpy(&id, data + 1, sizeof(id));
     return id;
+}
+
+inline Level* server_hello_packet_get_level(char *data) {
+    size_t level_size;
+    size_t header_size = 1 + sizeof(int) + sizeof(size_t);
+
+    std::memcpy(&level_size, data + 1 + sizeof(int), sizeof(level_size));
+
+    const char* level_data = data + header_size;
+
+    Level *level = Level::Deserialize(level_data, level_size);
+
+    return level;
 }
 #pragma endregion
 #pragma region server_bye

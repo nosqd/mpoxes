@@ -1,6 +1,7 @@
 #include <chrono>
 #include <cstring>
 #include "Game.h"
+#include "../Level/LevelLoader.h"
 
 #ifdef CLIENT
 #pragma message ("Building mpoxes client")

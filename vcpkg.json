@@ -13,6 +13,8 @@
     "glad",
     "stb",
     "glm",
-    "nlohmann-json"
+    "nlohmann-json",
+    "tinyfiledialogs",
+    "imguizmo"
   ]
 }

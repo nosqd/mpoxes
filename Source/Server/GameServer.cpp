@@ -34,8 +34,9 @@ void Game::HandleServerNetwork() {
                     enet_host_broadcast(server, 0, join_packet);
                 }
 
-                auto hello_packet = server_hello_packet(p->id);
+                auto hello_packet = server_hello_packet(p->id, *level);
                 enet_peer_send(event.peer, 0, hello_packet);
+                spdlog::info("greeted player {}", p->id);
                 break;
             }
             case ENET_EVENT_TYPE_RECEIVE: {
@@ -55,6 +56,8 @@ void Game::HandleServerNetwork() {
             case ENET_EVENT_TYPE_DISCONNECT: {
                 auto pid = static_cast<int>(reinterpret_cast<intptr_t>(event.peer->data));
                 spdlog::info("Client disconnected");
+                players.erase(pid);
+                players_wish_dirs.erase(pid);
                 auto bc_packet = server_bye_packet(pid);
                 enet_host_broadcast(server, 0, bc_packet);
                 event.peer->data = nullptr;

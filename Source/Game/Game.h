@@ -18,9 +18,10 @@
 #include "../Math/Color.h"
 #include "../Render/Camera2D.h"
 #include "../Render/Shader.h"
+#include "../Level/Level.h"
 
-constexpr int DESIGN_WIDTH = 1000;
-constexpr int DESIGN_HEIGHT = 562;
+constexpr int DESIGN_WIDTH = 1280;
+constexpr int DESIGN_HEIGHT = 720;
 
 class Game {
 public:
@@ -32,6 +33,8 @@ public:
     std::shared_ptr<Player> local_player;
     std::unordered_map<int, std::shared_ptr<Player> > players;
     std::unordered_map<int, Vector2> players_wish_dirs;
+
+    std::shared_ptr<Level> level;
 
     ENetHost *server{};
     ENetHost *client{};

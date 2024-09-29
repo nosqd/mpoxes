@@ -31,11 +31,7 @@ public:
     }
 
     glm::mat4 getProjectionMatrix() const {
-        float left = -screenWidth / 2.0f / zoom;
-        float right = screenWidth / 2.0f / zoom;
-        float bottom = -screenHeight / 2.0f / zoom;
-        float top = screenHeight / 2.0f / zoom;
-        return glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        return glm::ortho(-screenWidth/2, screenWidth/2, screenHeight/2, -screenHeight/2, -1.0f, 1.0f);
     }
 
 private:

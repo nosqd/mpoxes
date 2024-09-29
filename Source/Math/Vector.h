@@ -1,7 +1,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 #include <cmath>
+#include <complex.h>
 #include <iostream>
+#include <catch2/internal/catch_decomposer.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -59,6 +61,10 @@ public:
 
     [[nodiscard]] glm::vec2 as_glm() const {
         return {x, y};
+    }
+
+    bool operator==(const Vector2& other) const {
+        return this->x == other.x && this->y == other.y;
     }
 };
 
@@ -125,6 +131,10 @@ public:
     [[nodiscard]] glm::vec3 as_glm() const {
         return {x, y, z};
     }
+
+    bool operator==(const Vector3& other) const {
+        return this->x == other.x && this->y == other.y && this->z == other.z;
+    }
 };
 
 class Vector4 {
@@ -180,6 +190,10 @@ public:
 
     [[nodiscard]] glm::vec4 as_glm() const {
         return {x, y, z, w};
+    }
+
+    bool operator==(const Vector4& other) const {
+        return this->x == other.x && this->y == other.y && this->z == other.z && this->w == other.w;
     }
 };
 #endif //VECTOR_H

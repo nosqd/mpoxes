@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "../Client/GameData.h"
+#include "../Level/LevelLoader.h"
 #include "../Render/Mesh.h"
 
 #ifdef CLIENT
@@ -21,18 +22,18 @@ void Game::Setup() {
         exit(EXIT_FAILURE);
     }
 
-        GameData::Load();
+    GameData::Load();
 
-        window = glfwCreateWindow(DESIGN_WIDTH, DESIGN_HEIGHT, "mpoxes", nullptr, nullptr);
+    window = glfwCreateWindow(DESIGN_WIDTH, DESIGN_HEIGHT, "mpoxes", nullptr, nullptr);
 
-        glfwSetErrorCallback(glfw_error_callback);
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(0);
+    glfwSetErrorCallback(glfw_error_callback);
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(0);
 
-        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-            spdlog::error("Failed to initialize GLAD");
-            exit(EXIT_FAILURE);
-        }
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+        spdlog::error("Failed to initialize GLAD");
+        exit(EXIT_FAILURE);
+    }
 
 #if defined(__APPLE__)
         const char* glsl_version = "#version 150";
@@ -41,28 +42,30 @@ void Game::Setup() {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #else
-        const char *glsl_version = "#version 130";
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    const char *glsl_version = "#version 130";
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO &io = ImGui::GetIO();
-        (void) io;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    (void) io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
-        ImGui::StyleColorsDark();
+    ImGui::StyleColorsDark();
 
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
 
-        camera = Camera2D(DESIGN_WIDTH, DESIGN_HEIGHT);
-        shader = Shader("Shaders/shader.vert", "Shaders/shader.frag");
+    camera = Camera2D(DESIGN_WIDTH, DESIGN_HEIGHT);
+    shader = Shader("Shaders/shader.vert", "Shaders/shader.frag");
 
-        SetupClientNetwork();
-#else
+    SetupClientNetwork();
+#endif
+#ifdef SERVER
+    level = std::shared_ptr<Level>(LevelLoader::LoadFromFile("./Levels/current.mlvl"));
     StartServer();
 #endif
 }
@@ -82,6 +85,10 @@ void Game::Update(float dt) {
 
 #ifdef CLIENT
 void Game::Render() {
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+    glViewport(0, 0, width, height);
+
     running = !glfwWindowShouldClose(window);
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -92,20 +99,24 @@ void Game::Render() {
     for (const auto &p: players) {
         p.second->Render(shader);
     }
+
+    if (local_player != nullptr) {
+        level->Render(shader);
+    }
 }
 #endif
 
 void Game::Shutdown() {
 #ifdef CLIENT
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
-        ClientDisconnect();
-        GameData::Save();
+    ClientDisconnect();
+    GameData::Save();
 #endif
 #ifdef SERVER
     enet_host_destroy(server);

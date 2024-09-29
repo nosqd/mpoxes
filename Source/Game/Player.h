@@ -10,7 +10,7 @@
 #include "../Render/Shader.h"
 #include "../Render/Texture.h"
 
-constexpr int PLAYER_SPEED = 32.f;
+constexpr int PLAYER_SPEED = 128.f;
 static inline Vector2 PLAYER_SIZE = Vector2(16.f, 16.f);
 
 class Player {
@@ -23,6 +23,6 @@ public:
 
     Player(int id, Vector2 position, Color color);
     void Update(float dt, Vector2 move_dir);
-    void Render(Shader shader) ;
+    void Render(Shader& shader) ;
 };
 #endif //PLAYER_H

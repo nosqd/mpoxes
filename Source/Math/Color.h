@@ -4,6 +4,7 @@
 
 #ifndef COLOR_H
 #define COLOR_H
+#include "Vector.h"
 
 class Color {
 public:
@@ -21,6 +22,10 @@ public:
 
   [[nodiscard]] Vector4 asVec() const {
     return {r,g,b,a};
+  }
+
+  bool operator==(const Color& other) const {
+    return r == other.r && g == other.g && b == other.b;
   }
 };
 #endif //COLOR_H

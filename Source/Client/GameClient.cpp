@@ -18,6 +18,9 @@ void Game::HandleClientNetwork() {
             switch (event.type) {
                 case ENET_EVENT_TYPE_RECEIVE: {
                     auto data = reinterpret_cast<char *>(event.packet->data);
+                    if (data[0] != 'm')
+                        spdlog::info("Received a packed {}", (char)data[0]);
+
                     if (data[0] == 'j') {
                         int id = server_join_packet_get_id(data);
                         Vector2 pos = server_join_packet_get_position(data);
@@ -36,7 +39,10 @@ void Game::HandleClientNetwork() {
                         players[id]->position = newPosition;
                     } else if (data[0] == 'h') {
                         auto pid = server_hello_packet_get_id(data);
+                        auto l = server_hello_packet_get_level(data);
+                        level = std::shared_ptr<Level>(l);
                         local_player = players[pid];
+                        spdlog::info("Greeted by server, our id is {}, level has {} walls", local_player->id, level->walls.size());
                     } else if (data[0] == 'b') {
                         auto pid = server_bye_packet_get_id(data);
                         auto player = players[pid];
@@ -46,6 +52,7 @@ void Game::HandleClientNetwork() {
                         } else {
                             players.erase(pid);
                         }
+                        spdlog::info("Player {} is kicked/disconnected.", pid);
                     }
 
 

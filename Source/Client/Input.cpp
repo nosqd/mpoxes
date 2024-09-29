@@ -5,8 +5,8 @@
 Vector2 Input::GetMoveDir(GLFWwindow* win) {
     Vector2 wish_dir = {0.0f, 0.0f};
 
-    if (glfwGetKey(win, GLFW_KEY_W)) wish_dir.y += 1.0f;
-    if (glfwGetKey(win, GLFW_KEY_S)) wish_dir.y -= 1.0f;
+    if (glfwGetKey(win, GLFW_KEY_W)) wish_dir.y -= 1.0f;
+    if (glfwGetKey(win, GLFW_KEY_S)) wish_dir.y += 1.0f;
     if (glfwGetKey(win, GLFW_KEY_A)) wish_dir.x -= 1.0f;
     if (glfwGetKey(win, GLFW_KEY_D)) wish_dir.x += 1.0f;
 

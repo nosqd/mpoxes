@@ -20,14 +20,15 @@ void Player::Update(float dt, Vector2 move_dir) {
     this->position = this->position + move_dir * PLAYER_SPEED * dt;
 }
 
-void Player::Render(Shader shader) {
+void Player::Render(Shader& shader) {
     if (mesh.VAO == -1) {
         std::vector<Vertex> quad_vertices = {
-            {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
-            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f}},
-            {{0.5f, 0.5f, 0.0f}, {1.0f, 1.0f}},
-            {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f}}
+            {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+            {{1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+            {{1.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
+            {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}
         };
+
         std::vector<unsigned int> quad_indices = {
             0, 1, 2,
             2, 3, 0
@@ -39,8 +40,8 @@ void Player::Render(Shader shader) {
     }
 
     auto model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(PLAYER_SIZE.x, PLAYER_SIZE.y, 1.0f));
     model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+    model = glm::scale(model, glm::vec3(PLAYER_SIZE.x, PLAYER_SIZE.y, 1.0f));
 
     shader.setMat4("model", model);
     texture.use();

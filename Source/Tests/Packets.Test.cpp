@@ -3,12 +3,9 @@
 #include "../Game/Packets.h"
 #include "../Math/Vector.h"
 #include "../Math/Random.h"
+#include "Testing.h"
 #include <random>
 
-
-bool vector2Equal(const Vector2 &a, const Vector2 &b, float epsilon = 0.0001f) {
-    return std::abs(a.x - b.x) < epsilon && std::abs(a.y - b.y) < epsilon;
-}
 
 TEST_CASE("Client Move Packet", "[client][move]") {
     Vector2 inputExpected = Vector2(1.f, -1.f).normalized();
@@ -16,7 +13,7 @@ TEST_CASE("Client Move Packet", "[client][move]") {
     SECTION("Input is correctly set and retrieved") {
         auto packet = client_move_packet(moveDirectionTo(inputExpected));
         auto input = client_move_packet_get_input(reinterpret_cast<char *>(packet->data));
-        REQUIRE(vector2Equal(moveDirectionFrom(input), inputExpected));
+        REQUIRE(moveDirectionFrom(input) == inputExpected);
     }
 }
 
@@ -33,10 +30,10 @@ TEST_CASE("Server Move Packet", "[server][move]") {
         REQUIRE(id == idExpected);
 
         auto input = server_move_packet_get_input(reinterpret_cast<char *>(packet->data));
-        REQUIRE(vector2Equal(moveDirectionFrom(input), inputExpected));
+        REQUIRE(moveDirectionFrom(input) == inputExpected);
 
         auto position = server_move_packet_get_position(reinterpret_cast<char *>(packet->data));
-        REQUIRE(vector2Equal(position, positionExpected));
+        REQUIRE(position == positionExpected);
     }
 }
 
@@ -52,7 +49,7 @@ TEST_CASE("Server Join Packet", "[server][join]") {
         REQUIRE(id == idExpected);
 
         auto position = server_join_packet_get_position(reinterpret_cast<char *>(packet->data));
-        REQUIRE(vector2Equal(position, positionExpected));
+        REQUIRE(position == positionExpected);
 
         auto color = server_join_packet_get_color(reinterpret_cast<char *>(packet->data));
         REQUIRE((color.r == colorExpected.r && color.g == colorExpected.g && color.b == colorExpected.b && color.a == colorExpected.a));
@@ -72,12 +69,16 @@ TEST_CASE("Server Bye Packet", "[server][bye]") {
 
 TEST_CASE("Server Hello Packet", "[server][hello]") {
     int idExpected = randomInt(1, 1000000);
+    Level* levelExpected = Level::CreateSampleLevel();
 
-    SECTION("ID are correctly set and retrieved") {
-        auto packet = server_hello_packet(idExpected);
+    SECTION("ID and Level are correctly set and retrieved") {
+        auto packet = server_hello_packet(idExpected, *levelExpected);
 
         auto id = server_hello_packet_get_id(reinterpret_cast<char *>(packet->data));
         REQUIRE(id == idExpected);
+
+        auto level = server_hello_packet_get_level(reinterpret_cast<char *>(packet->data));
+        compareLevels(levelExpected, level);
     }
 }
 
@@ -87,6 +88,6 @@ TEST_CASE("Move Direction Convertor", "[misc][movement]") {
     SECTION("Input is correctly converted back and forth") {
         auto numeric = moveDirectionTo(inputExpected);
 
-        REQUIRE(vector2Equal(moveDirectionFrom(numeric), inputExpected));
+        REQUIRE(moveDirectionFrom(numeric) == inputExpected);
     }
 }
