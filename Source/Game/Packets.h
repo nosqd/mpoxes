@@ -6,8 +6,8 @@
 #define PACKETS_H
 #include <cstdint>
 #include <enet/enet.h>
-#include "Vector.h"
-#include "Color.h"
+#include "../Math/Vector.h"
+#include "../Math/Color.h"
 #include <cstring>
 
 enum MoveDirection : uint8_t {

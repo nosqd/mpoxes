@@ -1,6 +1,6 @@
-#include "Game.h"
-#include "Packets.h"
-#include "Random.h"
+#include "../Game/Game.h"
+#include "../Game/Packets.h"
+#include "../Math/Random.h"
 
 void Game::StartServer() {
     ENetAddress address;

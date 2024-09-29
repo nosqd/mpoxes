@@ -1,6 +1,6 @@
 #ifndef INPUT_H
 #define INPUT_H
-#include "Vector.h"
+#include "../Math/Vector.h"
 #include <GLFW/glfw3.h>
 
 namespace Input {

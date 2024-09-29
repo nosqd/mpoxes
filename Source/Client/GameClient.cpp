@@ -1,5 +1,5 @@
-#include "Game.h"
-#include "Packets.h"
+#include "../Game/Game.h"
+#include "../Game/Packets.h"
 #include "Input.h"
 
 void Game::HandleClientNetwork() {
