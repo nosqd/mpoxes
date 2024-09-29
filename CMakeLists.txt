@@ -10,12 +10,17 @@ find_package(raylib CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(Catch2 CONFIG REQUIRED)
 
-add_executable(mpoxes Source/Game/MPoxes.cpp
+add_executable(mpoxes Source/Game/Main.cpp
         Source/Game/Player.cpp
         Source/Game/Player.h
         Source/Game/Input.cpp
         Source/Game/Input.h
         Source/Game/Packets.h
+        Source/Game/Game.h
+        Source/Game/GameDebug.cpp
+        Source/Game/GameClient.cpp
+        Source/Game/GameServer.cpp
+        Source/Game/Game.cpp
 )
 
 add_executable(network-test Source/Tests/Packets.Test.cpp

@@ -118,7 +118,7 @@ inline Vector2 server_join_packet_get_position(const char *data) {
     return position;
 }
 
-inline Color server_join_packet_get_color(const char* data) {
+inline Color server_join_packet_get_color(const char *data) {
     Color color;
     std::memcpy(&color, data + 1 + sizeof(int) + sizeof(Vector2), sizeof(color));
     return color;

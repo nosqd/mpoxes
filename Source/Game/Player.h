@@ -8,7 +8,7 @@
 #include <raymath.h>
 
 constexpr int PLAYER_SPEED = 120;
-constexpr int PLAYER_SIZE = 8.f;
+constexpr Vector2 PLAYER_SIZE = Vector2(16.f, 16.f);
 
 class Player {
 public:
@@ -19,6 +19,7 @@ public:
     Player(int id, Vector2 position, Color color);
 
     void Update(float dt, Vector2 move_dir);
+
     void Render() const;
 };
 #endif //PLAYER_H

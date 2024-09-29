@@ -2,7 +2,7 @@
 #include <cmath>
 
 Vector2 Input::GetMoveDir() {
-    Vector2 wish_dir = { 0.0f, 0.0f };
+    Vector2 wish_dir = {0.0f, 0.0f};
 
     if (IsKeyDown(KEY_W)) wish_dir.y -= 1.0f;
     if (IsKeyDown(KEY_S)) wish_dir.y += 1.0f;

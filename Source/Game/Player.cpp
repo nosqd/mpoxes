@@ -15,5 +15,6 @@ void Player::Update(float dt, Vector2 move_dir) {
 }
 
 void Player::Render() const {
-    DrawCircleV(Vector2Subtract(position, Vector2Divide(Vector2(PLAYER_SIZE, PLAYER_SIZE), Vector2(2.f, 2.f))), PLAYER_SIZE, color);
+    DrawRectangleV(Vector2Subtract(position, Vector2Divide(PLAYER_SIZE, Vector2(2.f, 2.f))),
+                PLAYER_SIZE, color);
 }

@@ -5,10 +5,9 @@
     "raylib",
     {
       "name": "imgui",
-      "features": ["glfw-binding", "win32-binding", "opengl3-binding"]
+      "features": ["glfw-binding",  "opengl3-binding"]
     },
     "enet",
-    "physac",
     "catch2"
   ]
 }
