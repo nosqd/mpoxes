@@ -1,32 +1,17 @@
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch_all.hpp"
 #include "../Game/Packets.h"
+#include "../Game/Vector.h"
+#include "../Game/Random.h"
 #include <random>
-#include <raylib.h>
 
-std::random_device rd;
-std::mt19937 gen(rd());
-
-int randomInt(int min, int max) {
-    std::uniform_int_distribution<> distrib(min, max);
-    return distrib(gen);
-}
-
-float randomFloat(float min, float max) {
-    std::uniform_real_distribution<> distrib(min, max);
-    return static_cast<float>(distrib(gen));
-}
-
-Vector2 randomVector2(float min, float max) {
-    return Vector2(randomFloat(min, max), randomFloat(min, max));
-}
 
 bool vector2Equal(const Vector2 &a, const Vector2 &b, float epsilon = 0.0001f) {
     return std::abs(a.x - b.x) < epsilon && std::abs(a.y - b.y) < epsilon;
 }
 
 TEST_CASE("Client Move Packet", "[client][move]") {
-    Vector2 inputExpected = Vector2Normalize(Vector2(1.f, -1.f));
+    Vector2 inputExpected = Vector2(1.f, -1.f).normalized();
 
     SECTION("Input is correctly set and retrieved") {
         auto packet = client_move_packet(moveDirectionTo(inputExpected));
@@ -37,7 +22,7 @@ TEST_CASE("Client Move Packet", "[client][move]") {
 
 TEST_CASE("Server Move Packet", "[server][move]") {
     int idExpected = randomInt(1, 1000000);
-    Vector2 inputExpected = Vector2Normalize(Vector2(1.f, -1.f));
+    Vector2 inputExpected = Vector2(1.f, -1.f).normalized();
     Vector2 positionExpected = randomVector2(-10000.0f, 10000.0f);
 
 
@@ -98,7 +83,7 @@ TEST_CASE("Server Hello Packet", "[server][hello]") {
 
 
 TEST_CASE("Move Direction Convertor", "[misc][movement]") {
-    Vector2 inputExpected = Vector2Normalize(Vector2(1.f, -1.f));
+    Vector2 inputExpected = Vector2(1.f, -1.f).normalized();
     SECTION("Input is correctly converted back and forth") {
         auto numeric = moveDirectionTo(inputExpected);
 

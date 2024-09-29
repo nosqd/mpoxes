@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <enet/enet.h>
 #include "Vector.h"
+#include "Color.h"
 #include <cstring>
 
 enum MoveDirection : uint8_t {

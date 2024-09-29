@@ -40,7 +40,7 @@ void Game::DrawDebug(float dt) {
         ImGui::Text("Player %d", p.first);
         ImGui::Text("Position: %f %f", p.second->position.x, p.second->position.y);
         ImGui::Text("Wish direction: %f %f", players_wish_dirs[p.first].x, players_wish_dirs[p.first].y);
-        ImGui::Text("Color: %d %d %d", p.second->color.r, p.second->color.g, p.second->color.b);
+        ImGui::Text("Color: %f %f %f", p.second->color.r, p.second->color.g, p.second->color.b);
         ImGui::Separator();
     }
 

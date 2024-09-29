@@ -117,5 +117,6 @@ void Game::ClientDisconnect() {
     enet_host_destroy(client);
     client_peer = nullptr;
     client = nullptr;
+    local_player = nullptr;
     connect_modal_error_message = "";
 }

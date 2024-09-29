@@ -29,6 +29,7 @@ add_executable(mpoxes Source/Game/Main.cpp
         Source/Game/Shader.h
         Source/Game/Mesh.h
         Source/Game/Camera2D.h
+        Source/Game/Random.h
 )
 
 add_executable(network-test Source/Tests/Packets.Test.cpp
