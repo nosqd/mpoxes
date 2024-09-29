@@ -39,7 +39,7 @@ void Game::HandleServerNetwork() {
                 break;
             }
             case ENET_EVENT_TYPE_RECEIVE: {
-                auto pid = reinterpret_cast<int>(event.peer->data);
+                auto pid = static_cast<int>(reinterpret_cast<intptr_t>(event.peer->data));
                 auto player = players[pid];
                 auto data = reinterpret_cast<char *>(event.packet->data);
                 if (data[0] == 'm') {
@@ -53,7 +53,7 @@ void Game::HandleServerNetwork() {
                 break;
             }
             case ENET_EVENT_TYPE_DISCONNECT: {
-                auto pid = reinterpret_cast<int>(event.peer->data);
+                auto pid = static_cast<int>(reinterpret_cast<intptr_t>(event.peer->data));
                 spdlog::info("Client disconnected");
                 auto bc_packet = server_bye_packet(pid);
                 enet_host_broadcast(server, 0, bc_packet);
