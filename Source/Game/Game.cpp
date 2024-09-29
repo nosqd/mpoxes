@@ -3,8 +3,7 @@
 #include "../Client/GameData.h"
 #include "../Render/Mesh.h"
 
-static void glfw_error_callback(int error, const char* description)
-{
+static void glfw_error_callback(int error, const char *description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
@@ -12,13 +11,14 @@ void Game::Setup() {
     running = true;
     spdlog::info("Starting mpoxes.");
 
+
+#ifdef CLIENT
     if (!glfwInit()) {
         spdlog::error("Failed to initialize GLFW3");
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
-    if (!is_server) {
         GameData::Load();
 
         window = glfwCreateWindow(DESIGN_WIDTH, DESIGN_HEIGHT, "mpoxes", nullptr, nullptr);
@@ -60,9 +60,9 @@ void Game::Setup() {
         shader = Shader("Shaders/shader.vert", "Shaders/shader.frag");
 
         SetupClientNetwork();
-    } else {
-        StartServer();
-    }
+#else
+    StartServer();
+#endif
 }
 
 void Game::Update(float dt) {
@@ -70,13 +70,15 @@ void Game::Update(float dt) {
         p.second->Update(dt, players_wish_dirs[p.first]);
     }
 
-    if (is_server) {
-        HandleServerNetwork();
-    } else {
-        HandleClientNetwork();
-    }
+#ifdef SERVER
+    HandleServerNetwork();
+#endif
+#ifdef CLIENT
+    HandleClientNetwork();
+#endif
 }
 
+#ifdef CLIENT
 void Game::Render() {
     running = !glfwWindowShouldClose(window);
     glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -89,9 +91,10 @@ void Game::Render() {
         p.second->Render(shader);
     }
 }
+#endif
 
 void Game::Shutdown() {
-    if (!is_server) {
+#ifdef CLIENT
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
@@ -101,9 +104,8 @@ void Game::Shutdown() {
 
         ClientDisconnect();
         GameData::Save();
-    }
-
-    if (is_server) {
-        enet_host_destroy(server);
-    }
+#endif
+#ifdef SERVER
+    enet_host_destroy(server);
+#endif
 }

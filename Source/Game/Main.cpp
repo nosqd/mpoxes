@@ -2,14 +2,16 @@
 #include <cstring>
 #include "Game.h"
 
+#ifdef CLIENT
+#pragma message ("Building mpoxes client")
+#elif defined(SERVER)
+#pragma message ("Building mpoxes server")
+#else
+#error Unsupported game mode
+#endif
+
 int main(int argc, char *argv[]) {
     Game game{};
-
-    if (argc > 1 && std::strcmp(argv[1], "server") == 0) {
-        game.is_server = true;
-    } else {
-        game.is_server = false;
-    }
 
     if (enet_initialize() != 0) {
         spdlog::error("An error occurred while initializing ENet");
@@ -27,14 +29,14 @@ int main(int argc, char *argv[]) {
 
         game.Update(deltaTime);
 
-        if (!game.is_server) {
+        #ifdef CLIENT
             glfwPollEvents();
 
             game.Render();
             game.RenderImGui(deltaTime);
 
             glfwSwapBuffers(game.window);
-        }
+        #endif
     }
 
     game.Shutdown();

@@ -6,8 +6,8 @@
 #include <memory>
 #include <string>
 #include <spdlog/spdlog.h>
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -26,7 +26,6 @@ class Game {
 public:
     GLFWwindow * window;
 
-    bool is_server = false;
     bool running = false;
     int id_counter = 0;
 
@@ -43,31 +42,23 @@ public:
 
     std::string connect_modal_error_message;
 
-    void StartServer();
-
-    void SetupClientNetwork();
-
     void Setup();
-
-    void HandleServerNetwork();
-
-    void HandleClientNetwork();
-
     void Update(float dt);
-
-    void Render();
-
-    void DrawConnectModal();
-
-    void DrawDebug(float dt);
-
-    void RenderImGui(float dt);
-
     void Shutdown();
-
+#ifdef SERVER
+    void HandleServerNetwork();
+    void StartServer();
+#endif
+#ifdef CLIENT
+    void SetupClientNetwork();
+    void HandleClientNetwork();
+    void Render();
+    void DrawConnectModal();
+    void DrawDebug(float dt);
+    void RenderImGui(float dt);
     void ClientConnect(const std::string &host, int port);
-
     void ClientDisconnect();
+#endif
 };
 
 #endif //GAME_H
