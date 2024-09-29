@@ -7,8 +7,8 @@
 #include <glad/glad.h>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "Mesh.h"
-#include "Texture.h"
+#include "../Render/Mesh.h"
+#include "../Render/Texture.h"
 
 Player::Player(const int id, Vector2 position, Color color) {
     this->id = id;

@@ -1,8 +1,8 @@
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch_all.hpp"
 #include "../Game/Packets.h"
-#include "../Game/Vector.h"
-#include "../Game/Random.h"
+#include "../Math/Vector.h"
+#include "../Math/Random.h"
 #include <random>
 
 

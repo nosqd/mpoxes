@@ -4,11 +4,11 @@
 
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "Vector.h"
-#include "Color.h"
-#include "Mesh.h"
-#include "Shader.h"
-#include "Texture.h"
+#include "../Math/Vector.h"
+#include "../Math/Color.h"
+#include "../Render/Mesh.h"
+#include "../Render/Shader.h"
+#include "../Render/Texture.h"
 
 constexpr int PLAYER_SPEED = 32.f;
 static inline Vector2 PLAYER_SIZE = Vector2(16.f, 16.f);

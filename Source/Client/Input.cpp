@@ -1,6 +1,6 @@
 #include "Input.h"
 #include <cmath>
-#include <GLFW/glfw3.h>
+#include <../../cmake-build-debug/vcpkg_installed/x64-windows/include/GLFW/glfw3.h>
 
 Vector2 Input::GetMoveDir(GLFWwindow* win) {
     Vector2 wish_dir = {0.0f, 0.0f};

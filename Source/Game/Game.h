@@ -6,9 +6,6 @@
 #include <memory>
 #include <string>
 #include <spdlog/spdlog.h>
-#include "Player.h"
-#include "Vector.h"
-#include "Color.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <imgui.h>
@@ -16,7 +13,11 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_stdlib.h>
 
-#include "Camera2D.h"
+#include "Player.h"
+#include "../Math/Vector.h"
+#include "../Math/Color.h"
+#include "../Render/Camera2D.h"
+#include "../Render/Shader.h"
 
 constexpr int DESIGN_WIDTH = 1000;
 constexpr int DESIGN_HEIGHT = 562;

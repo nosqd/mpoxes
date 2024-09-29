@@ -15,23 +15,23 @@ find_package(glm CONFIG REQUIRED)
 add_executable(mpoxes Source/Game/Main.cpp
         Source/Game/Player.cpp
         Source/Game/Player.h
-        Source/Game/Input.cpp
-        Source/Game/Input.h
+        Source/Client/Input.cpp
+        Source/Client/Input.h
         Source/Game/Packets.h
         Source/Game/Game.h
-        Source/Game/GameDebug.cpp
-        Source/Game/GameClient.cpp
-        Source/Game/GameServer.cpp
+        Source/Client/GameDebug.cpp
+        Source/Client/GameClient.cpp
+        Source/Server/GameServer.cpp
         Source/Game/Game.cpp
-        Source/Game/Vector.h
-        Source/Game/Color.h
-        Source/Game/Texture.h
-        Source/Game/Shader.h
-        Source/Game/Mesh.h
-        Source/Game/Camera2D.h
-        Source/Game/Random.h
-        Source/Game/GameData.cpp
-        Source/Game/GameData.h
+        Source/Math/Vector.h
+        Source/Math/Color.h
+        Source/Render/Texture.h
+        Source/Render/Shader.h
+        Source/Render/Mesh.h
+        Source/Render/Camera2D.h
+        Source/Math/Random.h
+        Source/Client/GameData.cpp
+        Source/Client/GameData.h
 )
 
 add_executable(network-test Source/Tests/Packets.Test.cpp
