@@ -34,6 +34,6 @@ spins up a brand-new server open 7777 port
 
 ### Client
 ```shell
-$ ./mpoxes client
+$ ./mpoxes
 ```
-starts client that will connect to 127.0.0.1:7777
+starts client
