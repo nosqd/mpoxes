@@ -43,7 +43,6 @@ public:
 
     void SetupClientNetwork();
 
-
     void Setup();
 
     void HandleServerNetwork();

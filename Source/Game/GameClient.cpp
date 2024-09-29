@@ -4,8 +4,12 @@
 
 void Game::HandleClientNetwork() {
     if (client_peer != nullptr) {
-        auto packet = client_move_packet(moveDirectionTo(Input::GetMoveDir()));
-        enet_peer_send(client_peer, 0, packet);
+        auto currentDirection = moveDirectionTo(players_wish_dirs[local_player->id]);
+        auto newDirection = moveDirectionTo(Input::GetMoveDir());
+        if (currentDirection != newDirection) {
+            auto packet = client_move_packet(newDirection);
+            enet_peer_send(client_peer, 0, packet);
+        }
 
         ENetEvent event;
         while (enet_host_service(client, &event, 0) > 0) {
