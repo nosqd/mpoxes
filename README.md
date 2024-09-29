@@ -28,7 +28,7 @@ I'm builtin CLion vcpkg support, but you can just integrate vcpkg in your cmake 
 
 ### Server
 ```shell
-$ ./mpoxes server
+$ ./mpoxes-server
 ``` 
 spins up a brand-new server open 7777 port
 
