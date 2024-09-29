@@ -24,7 +24,6 @@ I'm builtin CLion vcpkg support, but you can just integrate vcpkg in your cmake 
 - glm (vcpkg) - OpenGL Mathematics (GLM)
 - nlohmann-json (vcpkg) - JSON for Modern C++
 - tinyfiledialogs (vcpkg) - Highly portable and cross-platform dialogs for native inputbox, passwordbox, colorpicker and more
-- imguizmo (vcpkg) - Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
 
 ## How to use.
 
@@ -39,3 +38,9 @@ spins up a brand-new server open 7777 port
 $ ./mpoxes
 ```
 starts client
+
+### Editor
+```shell
+$ ./mpoxes-editor 
+```
+starts an level editor

@@ -12,7 +12,7 @@
 
 constexpr int PLAYER_SPEED = 128.f;
 static inline Vector2 PLAYER_SIZE = Vector2(16.f, 16.f);
-
+class Game;
 class Player {
 public:
     int id;
@@ -20,9 +20,10 @@ public:
     Color color{};
     Mesh mesh{};
     Texture texture;
+    Game* game;
 
-    Player(int id, Vector2 position, Color color);
+    Player(int id, Vector2 position, Color color, Game* game);
     void Update(float dt, Vector2 move_dir);
-    void Render(Shader& shader) ;
+    void Render(Shader& shader);
 };
 #endif //PLAYER_H

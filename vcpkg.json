@@ -14,7 +14,6 @@
     "stb",
     "glm",
     "nlohmann-json",
-    "tinyfiledialogs",
-    "imguizmo"
+    "tinyfiledialogs"
   ]
 }

@@ -12,6 +12,8 @@
 #include "../Math/WorldToScreen.h"
 #include <glm/glm.hpp>
 
+#include "../Math/Rect.h"
+
 class Wall {
 public:
     int id;
@@ -20,12 +22,11 @@ public:
     Color color{};
     Mesh mesh;
     Texture texture;
-    bool isMeshSetupped = false;
 
     Wall(int id, Vector2 position, Vector2 size, Color color);
     void Render(Shader& shader);
     void GetScreenBounds(const glm::mat4& view, const glm::mat4& projection, float screenWidth, float screenHeight, Vector2& topLeft, Vector2& bottomRight) const;
-
     void ReapplyColor();
+    Rect GetRectangle() const;
 };
 #endif //WALL_H

@@ -78,21 +78,17 @@ Level* Level::Deserialize(const char *data, size_t size) {
     const size_t headerSize = 4 + sizeof(size_t);
     const size_t wallSize = sizeof(int) + sizeof(Vector2) + sizeof(Vector2) + sizeof(Color);
 
-    // Check if we have enough data for the header
     if (size < headerSize) {
         return nullptr;
     }
 
-    // Check magic number
     if (memcmp(data, expectedMagic, 4) != 0) {
         return nullptr;
     }
 
-    // Read wall count
     size_t wallCount;
     memcpy(&wallCount, data + 4, sizeof(size_t));
 
-    // Check if we have enough data for all walls
     size_t expectedSize = headerSize + wallCount * wallSize;
     if (size < expectedSize) {
         return nullptr;

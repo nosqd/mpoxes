@@ -23,7 +23,7 @@ void Game::HandleServerNetwork() {
             case ENET_EVENT_TYPE_CONNECT: {
                 spdlog::info("New client connected");
                 auto c = Color(randomInt(127, 255), randomInt(127, 255), randomInt(127, 255), 255);
-                auto p = std::make_shared<Player>(++id_counter, Vector2(0, 0), c);
+                auto p = std::make_shared<Player>(++id_counter, Vector2(0, 0), c, this);
                 players[p->id] = p;
                 players_wish_dirs[p->id] = Vector2(0, 0);
                 event.peer->data = reinterpret_cast<void *>(p->id);

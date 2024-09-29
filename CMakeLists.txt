@@ -18,7 +18,6 @@ find_package(Catch2 CONFIG REQUIRED)
 find_package(Stb REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(tinyfiledialogs CONFIG REQUIRED)
-find_package(imguizmo CONFIG REQUIRED)
 
 set(
         MPOXES_COMMON_SRC
@@ -46,6 +45,7 @@ set(
         Source/Level/LevelLoader.cpp
         Source/Level/LevelLoader.h
         Source/Math/WorldToScreen.h
+        Source/Math/Rect.h
 )
 
 set(
@@ -94,6 +94,7 @@ set_target_properties(mpoxes-editor PROPERTIES OUTPUT_NAME "mpoxes-editor")
 
 target_compile_definitions(mpoxes PUBLIC CLIENT)
 target_compile_definitions(mpoxes-server PUBLIC SERVER)
+target_compile_definitions(mpoxes-editor PUBLIC EDITOR)
 
 add_executable(network-test
         Source/Tests/Packets.Test.cpp
@@ -118,7 +119,7 @@ add_executable(level-test
 set(MPOXES_COMMON_LIBRARIES spdlog::spdlog unofficial::enet::enet glm::glm glad::glad tinyfiledialogs::tinyfiledialogs)
 set(MPOXES_CLIENT_LIBRARIES glfw imgui::imgui)
 set(MPOXES_SERVER_LIBRARIES)
-set(MPOXES_EDITOR_LIBRARIES imguizmo::imguizmo)
+set(MPOXES_EDITOR_LIBRARIES)
 
 target_link_libraries(network-test PRIVATE ${MPOXES_COMMON_LIBRARIES} Catch2::Catch2 Catch2::Catch2WithMain)
 target_link_libraries(level-test PRIVATE ${MPOXES_COMMON_LIBRARIES} ${MPOXES_CLIENT_LIBRARIES} Catch2::Catch2 Catch2::Catch2WithMain)

@@ -25,7 +25,7 @@ void Game::HandleClientNetwork() {
                         int id = server_join_packet_get_id(data);
                         Vector2 pos = server_join_packet_get_position(data);
                         Color color = server_join_packet_get_color(data);
-                        auto p = std::make_shared<Player>(id, pos, color);
+                        auto p = std::make_shared<Player>(id, pos, color, this);
                         players[id] = p;
                         players_wish_dirs[id] = Vector2(0, 0);
 
