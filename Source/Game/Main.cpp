@@ -3,7 +3,7 @@
 #include "Game.h"
 
 int main(int argc, char *argv[]) {
-    Game game;
+    Game game{};
 
     if (argc > 1 && std::strcmp(argv[1], "server") == 0) {
         game.is_server = true;
@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (enet_initialize() != 0) {
-        TraceLog(LOG_FATAL, "An error occurred while initializing ENet");
+        spdlog::error("An error occurred while initializing ENet");
         return EXIT_FAILURE;
     }
 
@@ -28,10 +28,12 @@ int main(int argc, char *argv[]) {
         game.Update(deltaTime);
 
         if (!game.is_server) {
-            BeginDrawing();
+            glfwPollEvents();
+
             game.Render();
-            game.RenderImGui();
-            EndDrawing();
+            game.RenderImGui(deltaTime);
+
+            glfwSwapBuffers(game.window);
         }
     }
 

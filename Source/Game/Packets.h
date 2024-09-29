@@ -4,19 +4,9 @@
 
 #ifndef PACKETS_H
 #define PACKETS_H
-#ifdef WIN32
-#define NOGDI
-#define NOUSER
-#endif
 #include <cstdint>
 #include <enet/enet.h>
-#if defined(_WIN32)           // raylib uses these names as function parameters
-#undef near
-#undef far
-#undef PlaySound
-#endif
-#include <raylib.h>
-#include <raymath.h>
+#include "Vector.h"
 #include <cstring>
 
 enum MoveDirection : uint8_t {
@@ -34,7 +24,7 @@ inline Vector2 moveDirectionFrom(uint8_t direction) {
     if (direction & MoveDirection::RIGHT) wishDir.x = 1.f;
     if (direction & MoveDirection::LEFT) wishDir.x = -1.f;
 
-    return Vector2Normalize(wishDir);
+    return wishDir.normalized();
 }
 
 inline uint8_t moveDirectionTo(Vector2 direction) {

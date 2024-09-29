@@ -4,11 +4,13 @@
 
 void Game::HandleClientNetwork() {
     if (client_peer != nullptr) {
-        auto currentDirection = moveDirectionTo(players_wish_dirs[local_player->id]);
-        auto newDirection = moveDirectionTo(Input::GetMoveDir());
-        if (currentDirection != newDirection) {
-            auto packet = client_move_packet(newDirection);
-            enet_peer_send(client_peer, 0, packet);
+        if (local_player != nullptr) {
+            auto currentDirection = moveDirectionTo(players_wish_dirs[local_player->id]);
+            auto newDirection = moveDirectionTo(Input::GetMoveDir(window));
+            if (currentDirection != newDirection) {
+                auto packet = client_move_packet(newDirection);
+                enet_peer_send(client_peer, 0, packet);
+            }
         }
 
         ENetEvent event;
@@ -24,7 +26,7 @@ void Game::HandleClientNetwork() {
                         players[id] = p;
                         players_wish_dirs[id] = Vector2(0, 0);
 
-                        TraceLog(LOG_INFO, TextFormat("New player joined: %d", id));
+                        spdlog::info("New player joined: {}", id);
                     } else if (data[0] == 'm') {
                         int id = server_move_packet_get_id(data);
                         Vector2 wishDir = moveDirectionFrom(server_move_packet_get_input(data));
@@ -51,7 +53,7 @@ void Game::HandleClientNetwork() {
                     break;
                 }
                 case ENET_EVENT_TYPE_DISCONNECT: {
-                    TraceLog(LOG_FATAL, "Client disconnected");
+                    spdlog::info("Client disconnected");
                     exit(EXIT_FAILURE);
                 }
                 case ENET_EVENT_TYPE_NONE:
@@ -66,7 +68,7 @@ void Game::SetupClientNetwork() {
     client = enet_host_create(nullptr, 1, 2, 0, 0);
 
     if (client == nullptr) {
-        TraceLog(LOG_FATAL, "An error occurred while trying to create an ENet client host.");
+        spdlog::error("Could not create an ENet client host.");
         exit(EXIT_FAILURE);
     }
 }
@@ -81,12 +83,12 @@ void Game::ClientConnect(const std::string &host, int port) {
     client_peer = enet_host_connect(client, &address, 2, 0);
 
     if (enet_host_service(client, &event, 1000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
-        TraceLog(LOG_INFO, "Connection to server succeeded.");
+        spdlog::info("Client connected");
     } else {
         enet_peer_reset(client_peer);
         client_peer = nullptr;
         connect_modal_error_message = "Could not connect to server.";
-        TraceLog(LOG_ERROR, "Connection to server failed.");
+        spdlog::error("Connection to server failed.");
     }
 }
 
@@ -104,7 +106,7 @@ void Game::ClientDisconnect() {
                 enet_packet_destroy(event.packet);
                 break;
             case ENET_EVENT_TYPE_DISCONNECT:
-                TraceLog(LOG_INFO, "Disconnection succeeded.");
+                spdlog::info("Disconnection succeeded.");
                 return;
             case ENET_EVENT_TYPE_NONE:
             case ENET_EVENT_TYPE_CONNECT:

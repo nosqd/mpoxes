@@ -1,29 +1,30 @@
 #ifndef GAME_H
-
 #define GAME_H
-#if defined(_WIN32)
-#define NOGDI             // All GDI defines and routines
-#define NOUSER            // All USER defines and routines
-#endif
+
 #include <enet/enet.h>
-#if defined(_WIN32)           // raylib uses these names as function parameters
-#undef near
-#undef far
-#undef PlaySound
-#endif
-#include <raylib.h>
 #include <unordered_map>
 #include <memory>
 #include <string>
+#include <spdlog/spdlog.h>
 #include "Player.h"
+#include "Vector.h"
+#include "Color.h"
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include "Camera2D.h"
 
 constexpr int DESIGN_WIDTH = 1000;
 constexpr int DESIGN_HEIGHT = 562;
 
 class Game {
 public:
+    GLFWwindow * window;
+
     bool is_server = false;
-    Camera2D camera{};
     bool running = false;
     int id_counter = 0;
 
@@ -34,6 +35,9 @@ public:
     ENetHost *server{};
     ENetHost *client{};
     ENetPeer *client_peer{};
+
+    Camera2D camera{0,0};
+    Shader shader{};
 
     std::string connect_modal_error_message;
     char connect_modal_host[256] = "localhost";
@@ -55,9 +59,9 @@ public:
 
     void DrawConnectModal();
 
-    void DrawDebug();
+    void DrawDebug(float dt);
 
-    void RenderImGui();
+    void RenderImGui(float dt);
 
     void Shutdown();
 
