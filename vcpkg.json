@@ -2,12 +2,16 @@
   "name": "mpoxes",
   "version": "0.1.0",
   "dependencies" : [
-    "raylib",
     {
       "name": "imgui",
-      "features": ["glfw-binding",  "opengl3-binding"]
+      "features": ["glfw-binding", "opengl3-binding"]
     },
     "enet",
-    "catch2"
+    "catch2",
+    "glfw3",
+    "spdlog",
+    "glad",
+    "stb",
+    "glm"
   ]
 }

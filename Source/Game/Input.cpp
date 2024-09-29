@@ -1,13 +1,14 @@
 #include "Input.h"
 #include <cmath>
+#include <GLFW/glfw3.h>
 
-Vector2 Input::GetMoveDir() {
+Vector2 Input::GetMoveDir(GLFWwindow* win) {
     Vector2 wish_dir = {0.0f, 0.0f};
 
-    if (IsKeyDown(KEY_W)) wish_dir.y -= 1.0f;
-    if (IsKeyDown(KEY_S)) wish_dir.y += 1.0f;
-    if (IsKeyDown(KEY_A)) wish_dir.x -= 1.0f;
-    if (IsKeyDown(KEY_D)) wish_dir.x += 1.0f;
+    if (glfwGetKey(win, GLFW_KEY_W)) wish_dir.y += 1.0f;
+    if (glfwGetKey(win, GLFW_KEY_S)) wish_dir.y -= 1.0f;
+    if (glfwGetKey(win, GLFW_KEY_A)) wish_dir.x -= 1.0f;
+    if (glfwGetKey(win, GLFW_KEY_D)) wish_dir.x += 1.0f;
 
     // Normalize the vector if it's not zero
     if (wish_dir.x != 0.0f || wish_dir.y != 0.0f) {

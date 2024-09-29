@@ -10,7 +10,7 @@ void Game::StartServer() {
     server = enet_host_create(&address, 69, 2, 0, 0);
 
     if (server == nullptr) {
-        TraceLog(LOG_FATAL, "An error occurred while trying to create an ENet server host.");
+        spdlog::error("Failed to create server host");
         exit(EXIT_FAILURE);
     }
 }
@@ -20,8 +20,8 @@ void Game::HandleServerNetwork() {
     while (enet_host_service(server, &event, 0) > 0) {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT: {
-                TraceLog(LOG_INFO, "New client connected");
-                auto c = Color(GetRandomValue(127, 255), GetRandomValue(127, 255), GetRandomValue(127, 255), 255);
+                spdlog::info("New client connected");
+                auto c = Color(127, 127, 0, 255);
                 auto p = std::make_shared<Player>(++id_counter, Vector2(0, 0), c);
                 players[p->id] = p;
                 players_wish_dirs[p->id] = Vector2(0, 0);
@@ -53,7 +53,7 @@ void Game::HandleServerNetwork() {
             }
             case ENET_EVENT_TYPE_DISCONNECT: {
                 auto pid = reinterpret_cast<int>(event.peer->data);
-                TraceLog(LOG_INFO, "Client disconnected");
+                spdlog::info("Client disconnected");
                 auto bc_packet = server_bye_packet(pid);
                 enet_host_broadcast(server, 0, bc_packet);
                 event.peer->data = nullptr;

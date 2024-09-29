@@ -1,6 +1,5 @@
 #include "Game.h"
 #include <imgui.h>
-#include <rlImGui.h>
 
 void Game::DrawConnectModal() {
     ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_FirstUseEver);
@@ -23,14 +22,14 @@ void Game::DrawConnectModal() {
     }
 }
 
-void Game::DrawDebug() {
+void Game::DrawDebug(float dt) {
     ImGui::SetNextWindowPos(ImVec2(16.f, 8.f));
     ImGui::Begin("Debug", nullptr,
                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar |
                  ImGuiWindowFlags_AlwaysAutoResize);
 
     ImGui::Text("mpoxes");
-    ImGui::Text(TextFormat("FPS: %d", GetFPS()));
+    ImGui::Text("FPS: %f", 1.f/dt);
     if (client_peer != nullptr) {
         if (ImGui::Button("Disconnect")) {
             ClientDisconnect();
@@ -38,24 +37,27 @@ void Game::DrawDebug() {
     }
     ImGui::Separator();
     for (const auto &p: players) {
-        ImGui::Text(TextFormat("Player %d", p.first));
-        ImGui::Text(TextFormat("Position: %f %f", p.second->position.x, p.second->position.y));
-        ImGui::Text(TextFormat("Wish direction: %f %f", players_wish_dirs[p.first].x, players_wish_dirs[p.first].y));
-        ImGui::Text(TextFormat("Color: %d %d %d", p.second->color.r, p.second->color.g, p.second->color.b));
+        ImGui::Text("Player %d", p.first);
+        ImGui::Text("Position: %f %f", p.second->position.x, p.second->position.y);
+        ImGui::Text("Wish direction: %f %f", players_wish_dirs[p.first].x, players_wish_dirs[p.first].y);
+        ImGui::Text("Color: %d %d %d", p.second->color.r, p.second->color.g, p.second->color.b);
         ImGui::Separator();
     }
 
     ImGui::End();
 }
 
-void Game::RenderImGui() {
-    rlImGuiBegin();
+void Game::RenderImGui(float dt) {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
 
-    DrawDebug();
+    DrawDebug(dt);
 
     if (client_peer == nullptr) {
         DrawConnectModal();
     }
 
-    rlImGuiEnd();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
