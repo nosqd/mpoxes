@@ -28,7 +28,7 @@ void Game::DrawDebug(float dt) {
     ImGui::SetNextWindowPos(ImVec2(16.f, 8.f));
     ImGui::Begin("Debug", nullptr,
                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar |
-                 ImGuiWindowFlags_AlwaysAutoResize);
+                 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground);
 
     ImGui::Text("mpoxes");
     ImGui::Text("FPS: %f", 1.f/dt);

@@ -1,7 +1,7 @@
 # MPOxes
 > MultiPlayer bOxes
 
-Simple c++ 2d multiplayer game built with raylib and enet where you can move player as a box.
+Simple c++ 2d multiplayer game built with opengl and enet where you can move player as a box.
 
 ## Why?
 
