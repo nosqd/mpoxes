@@ -10,7 +10,7 @@
 #include "../Render/Shader.h"
 #include "../Render/Texture.h"
 
-constexpr int PLAYER_SPEED = 128.f;
+constexpr int PLAYER_SPEED = 300.f;
 static inline Vector2 PLAYER_SIZE = Vector2(16.f, 16.f);
 class Game;
 class Player {

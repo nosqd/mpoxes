@@ -3,7 +3,6 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
-#include <ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "../Level/LevelLoader.h"
 #include "../Math/WorldToScreen.h"
@@ -25,7 +24,6 @@ void LevelEditor::Frame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGuizmo::BeginFrame();
 
     DrawImGui();
 
